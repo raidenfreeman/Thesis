@@ -1,3 +1,5 @@
+# Pkg.add("BenchmarkTools")
+
 function setupA(N)
     I = speye(N)
     s = vcat(squeeze(-1*ones(Int64,1,N-1),1),
@@ -44,12 +46,13 @@ function driver_ge(N)
     x = [h : h : 1-h;]
     y = x;
     X, Y = ndgrid(x,y)
-    F = (-2*pi^2) * (cos(2*pi*X).*(sin(pi*Y)).^2 + (sin(pi*X)).^2.*cos(2*pi*Y))
+    F = (-2*pi^2) * (cos.(2*pi*X).*(sin.(pi*Y)).^2 + (sin.(pi*X)).^2.*cos.(2*pi*Y))
     b = h^2 * F[:]
-    @elapsed calculation(N,b,x ,y)
+    # @elapsed calculation(N,b,x ,y)
+    calculation(N,b,x ,y)
 end
 
-#
+
 function calculation(N, b, x, y)
     A = setupA(N)
     u = A \ b
@@ -81,7 +84,7 @@ function calculation(N, b, x, y)
     # ylabel("y")
     # zlabel("u-u_h")
     # compute L^inf norm of error and print:
-    enorminf = max(abs(E[:]))
+    enorminf = maximum(abs(E[:]))
     # fprintf("N = %5d\n", N)
     # fprintf("h = %24.16e\n", h)
     # fprintf("h^2 = %24.16e\n", h^2)
