@@ -103,3 +103,41 @@ reconstructedMatrix
 
 * Μπορεί να σχεδιάσει κάθε είδος γραφήματος που χρειαζόμαστε
 * Τα παραγόμενα γραφήματα είναι σε επαρκές μορφές εξόδου (οθόνη/αρχεία)
+
+
+Εγκαθιστώντας τα κατάλληλα πακέτα:
+
+``` julia
+Pkg.add("Plots")
+Pkg.add("PyPlot")
+```
+
+μπορούμε να τρέξουμε τις ακόλουθες εντολές, για να σχεδιάσουμε ένα γράφημα της συνάρτησης f(x) = x sin(x<sup>2</sup>):
+
+``` julia
+using Plots
+filepath = "matlabdata.dat"
+A = readdlm(filepath) # read a file with data in a known matrix format
+x = A[:,1]
+y = A[:,2]
+display(
+  plot(
+    x,
+    y,
+    size=(800,800),
+    ticks=[n for n=-6:6], #display axis ticks and grid lines
+    line = (:line,:solid, :arrow, 0.5, 4, :teal),
+    xlabel = "x",
+    ylabel = "x sin(x^2)",
+    title="f(x) = x sin(x^2)",
+    lw=3
+    )
+ ) # display() is necessary if used inside a script,
+   # due default configuration of only the REPL
+   # displaying output, even plots
+png("matlabdata") # save the plot to a .png file
+```
+
+Και το αποτέλεσμα:
+
+![Γράφημα f(x) = x sin(x<sup>2</sup>)](./matlabdata.png)
