@@ -22,19 +22,20 @@ end
 ############
 ##  Plot  ##
 ############
-fig = figure("pyplot_surfaceplot",figsize=(10,10))
-ax = fig[:add_subplot](2,1,1, projection = "3d")
+fig = figure("pyplot_surfaceplot",figsize=(20,10))
+ax = fig[:add_subplot](1,1,1, projection = "3d")
 ax[:plot_surface](xgrid, ygrid, z, rstride=2,edgecolors="k", cstride=2, cmap=ColorMap("gray"), alpha=0.8, linewidth=0.25)
 xlabel("X")
 ylabel("Y")
 title("Surface Plot")
-
-subplot(212)
-ax = fig[:add_subplot](2,1,2)
-cp = ax[:contour](xgrid, ygrid, z, colors="black", linewidth=2.0)
-ax[:clabel](cp, inline=1, fontsize=10)
-xlabel("X")
-ylabel("Y")
-title("Contour Plot")
-tight_layout()
 show()
+
+# subplot(212)
+# ax = fig[:add_subplot](2,1,2)
+# cp = ax[:contour](xgrid, ygrid, z, colors="black", linewidth=2.0)
+# ax[:clabel](cp, inline=1, fontsize=10)
+# xlabel("X")
+# ylabel("Y")
+# title("Contour Plot")
+# tight_layout()
+# show()

@@ -1,4 +1,6 @@
 # Pkg.add("BenchmarkTools")
+using PyPlot
+using Distributions
 
 function setupA(N)
     I = speye(N)
@@ -48,8 +50,27 @@ function driver_ge(N)
     X, Y = ndgrid(x,y)
     F = (-2*pi^2) * (cos.(2*pi*X).*(sin.(pi*Y)).^2 + (sin.(pi*X)).^2.*cos.(2*pi*Y))
     b = h^2 * F[:]
-    # @elapsed calculation(N,b,x ,y)
-    calculation(N,b,x ,y)
+    X, Y , E = calculation(N,b,x ,y)
+    display(X)
+    display(Y)
+    display(E)
+
+    fig = figure("pyplot_surfaceplot",figsize=(20,10))
+    ax = fig[:add_subplot](1,1,1, projection = "3d")
+    ax[:plot_surface](X, Y, E, rstride=2,edgecolors="k", cstride=2, cmap=ColorMap("gray"), alpha=0.8, linewidth=0.25)
+    xlabel("X")
+    ylabel("Y")
+    title("Surface Plot")
+    io = open(string("meshPlot_",N,".png"),"w");
+    show(io, "image/png", fig)
+    close(io)
+
+    # pyplot()
+    # # pyplot(leg=false, ticks=nothing)
+    # axisData = linspace(0.0,10.0,N)
+    # p = plot(axisData,axisData,axisData, st = [:surface, :contourf])
+    # plot!(zeros(n),zeros(n),1:n,w=10)
+    # display(p)
 end
 
 
@@ -75,8 +96,9 @@ function calculation(N, b, x, y)
     # ylabel("y")
     # zlabel("u")
     # compute and plot numerical error:
-    Utrue = (sin(pi*X)).^2 .* (sin(pi*Y)).^2
+    Utrue = (sin.(pi*X)).^2 .* (sin.(pi*Y)).^2
     E = U - Utrue
+    return X, Y, E
     # figure
     # H = mesh(X,Y,E) # for Matlab and Octave
     #plot3(X,Y,E) # for FreeMat
@@ -84,7 +106,7 @@ function calculation(N, b, x, y)
     # ylabel("y")
     # zlabel("u-u_h")
     # compute L^inf norm of error and print:
-    enorminf = maximum(abs(E[:]))
+    # enorminf = maximum(abs(E[:]))
     # fprintf("N = %5d\n", N)
     # fprintf("h = %24.16e\n", h)
     # fprintf("h^2 = %24.16e\n", h^2)
