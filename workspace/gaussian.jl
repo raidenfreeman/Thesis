@@ -52,10 +52,10 @@ function driver_ge(N)
 
     fig = figure("pyplot_surfaceplot",figsize=(20,10))
     ax = fig[:add_subplot](1,1,1, projection = "3d")
-    ax[:plot_surface](X, Y, E, rstride=2,edgecolors="k", cstride=2, cmap=ColorMap("gray"), alpha=0.8, linewidth=0.25)
+    ax[:plot_surface](X, Y, E, rstride=2,edgecolors="k", cstride=2, cmap=ColorMap("plasma"), linewidth=0.01)
     xlabel("X")
     ylabel("Y")
-    title("Surface Plot")
+    title(string(N," Surface Plot"))
     io = open(string("meshPlot_",N,".png"),"w");
     show(io, "image/png", fig)
     close(io)
