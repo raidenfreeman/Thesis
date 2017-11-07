@@ -144,7 +144,7 @@ png("matlabdata") # save the plot to a .png file
 
 Και το αποτέλεσμα:
 
-![Γράφημα f(x) = x sin(x<sup>2</sup>)](./matlabdata.png&s=300)
+<img src="./matlabdata.png" width="300")
 
 ## Δοκιμή Σύνθετων Λειτουργιών
 
