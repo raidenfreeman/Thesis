@@ -144,7 +144,7 @@ png("matlabdata") # save the plot to a .png file
 
 Και το αποτέλεσμα:
 
-<img src="./matlabdata.png" width="300")
+<img src="./matlabdata.png" width="300">
 
 ## Δοκιμή Σύνθετων Λειτουργιών
 
