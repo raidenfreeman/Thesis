@@ -56,6 +56,12 @@ function orth(M::Matrix)
   return Ufactor[:,1:matrixRank]
 end
 
+function orth(M::Matrix, tol::Real)
+  matrixRank = rank(M,tol)
+  Ufactor = svdfact(M)[:U]
+  return Ufactor[:,1:matrixRank]
+end
+
 """
 # Breakdown Free Block CG
 
@@ -76,7 +82,7 @@ function BFBCG(A::Matrix, Xcurrent::Matrix, M::Matrix, tol::Number, maxit::Numbe
     # initialization
     #Rcurrent = B - A*Xcurrent;
     Zcurrent = M*Rcurrent;
-    Pcurrent = orth(Zcurrent);
+    Pcurrent = orth(Zcurrent,tol);
     @printf("\nRANK:\t%d",rank(Rcurrent,tol))
     @printf("\nNORM column1:\t%1.8f",vecnorm(Rcurrent[:,1]))
     @printf("\nNORM column2:\t%1.8f\n=============",vecnorm(Rcurrent[:,2]))
@@ -97,7 +103,7 @@ function BFBCG(A::Matrix, Xcurrent::Matrix, M::Matrix, tol::Number, maxit::Numbe
         end
         Znext = M*Rnext
         bcurrent = -(Pcurrent' * Q)\(Q'*Znext)
-        Pnext = orth(Znext+Pcurrent*bcurrent)
+        Pnext = orth(Znext+Pcurrent*bcurrent,tol)
 
         Xcurrent = Xnext
         Zcurrent = Znext
@@ -113,7 +119,7 @@ end
 A = [15 5 4 3 2 1; 5 35 9 8 7 6; 4 9 46 12 11 10; 3 8 12 50 14 13; 2 7 11 14 19 15; 1 6 10 13 15 45]
 M = eye(6)
 
-guess = rand(6,2)
+guess = ones(6,2) #rand(6,2)
 
 R0 = [1 0.537266261211281;2 0.043775211060964;3 0.964458562037146;4 0.622317517840541;5 0.552735938776748;6 0.023323943544997]
 
