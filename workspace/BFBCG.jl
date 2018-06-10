@@ -1,3 +1,5 @@
+module BFBCGmodule
+
 function prettyprint(a, cnames, rnames="",digits=8, decimals=4)
     # TBD: try to use this to allow using specified digits and decimals
     #fmt = @sprintf("%d",digits)"."@sprintf("%d",decimals)"%f"
@@ -78,14 +80,14 @@ end
 
 Returns: an approximate solution `Xsol` n x s
 """
-function BFBCG(A::Matrix, Xcurrent::Matrix, M::Matrix, tol::Number, maxit::Number, Rcurrent::Matrix)#,B)
+function BFBCG(A, Xcurrent, M::Matrix, tol::Number, maxit::Number, Rcurrent::Matrix)#,B)
     # initialization
     #Rcurrent = B - A*Xcurrent;
     Zcurrent = M*Rcurrent;
     Pcurrent = orth(Zcurrent,tol);
-    @printf("\nRANK:\t%d",rank(Rcurrent,tol))
-    @printf("\nNORM column1:\t%1.8f",vecnorm(Rcurrent[:,1]))
-    @printf("\nNORM column2:\t%1.8f\n=============",vecnorm(Rcurrent[:,2]))
+    # @printf("\nRANK:\t%d",rank(Rcurrent,tol))
+    # @printf("\nNORM column1:\t%1.8f",vecnorm(Rcurrent[:,1]))
+    # @printf("\nNORM column2:\t%1.8f\n=============",vecnorm(Rcurrent[:,2]))
 
     Xnext::Matrix = ones(size(Xcurrent))
     # iterative method
@@ -96,9 +98,9 @@ function BFBCG(A::Matrix, Xcurrent::Matrix, M::Matrix, tol::Number, maxit::Numbe
         Rnext = Rcurrent-Q*acurrent
         # if Residual norm of columns in Rcurrent < tol, stop
         if vecnorm(Rcurrent[:,1]) < tol && vecnorm(Rcurrent[:,2]) < tol
-            @printf("\nRANK:\t%d",rank(Rcurrent,tol))
-            @printf("\nNORM column1:\t%1.20f",vecnorm(Rcurrent[:,1]))
-            @printf("\nNORM column2:\t%1.20f\n=============",vecnorm(Rcurrent[:,2]))
+            # @printf("\nRANK:\t%d",rank(Rcurrent,tol))
+            # @printf("\nNORM column1:\t%1.20f",vecnorm(Rcurrent[:,1]))
+            # @printf("\nNORM column2:\t%1.20f\n=============",vecnorm(Rcurrent[:,2]))
             break
         end
         Znext = M*Rnext
@@ -109,36 +111,41 @@ function BFBCG(A::Matrix, Xcurrent::Matrix, M::Matrix, tol::Number, maxit::Numbe
         Zcurrent = Znext
         Rcurrent = Rnext
         Pcurrent = Pnext
-        @printf("\nRANK:\t%d",rank(Rcurrent,tol))
-        @printf("\nNORM column1:\t%1.8f",vecnorm(Rcurrent[:,1]))
-        @printf("\nNORM column2:\t%1.8f\n=============",vecnorm(Rcurrent[:,2]))
+        # @printf("\nRANK:\t%d",rank(Rcurrent,tol))
+        # @printf("\nNORM column1:\t%1.8f",vecnorm(Rcurrent[:,1]))
+        # @printf("\nNORM column2:\t%1.8f\n=============",vecnorm(Rcurrent[:,2]))
     end
     return Xnext
 end
 
-A = [15 5 4 3 2 1; 5 35 9 8 7 6; 4 9 46 12 11 10; 3 8 12 50 14 13; 2 7 11 14 19 15; 1 6 10 13 15 45]
-M = eye(6)
 
-guess = ones(6,2) #rand(6,2)
+function TestRuns()
+    A = [15 5 4 3 2 1; 5 35 9 8 7 6; 4 9 46 12 11 10; 3 8 12 50 14 13; 2 7 11 14 19 15; 1 6 10 13 15 45]
+    M = eye(6)
 
-R0 = [1 0.537266261211281;2 0.043775211060964;3 0.964458562037146;4 0.622317517840541;5 0.552735938776748;6 0.023323943544997]
+    guess = ones(6,2) #rand(6,2)
 
-R0_2 = [1 10; 2 20; 3 30; 4 40; 5 50; 6 60]
+    R0 = [1 0.537266261211281;2 0.043775211060964;3 0.964458562037146;4 0.622317517840541;5 0.552735938776748;6 0.023323943544997]
 
-R0_3= [1 0.027212780358615; 2 0.117544343373396; 3 0.140184539179715; 4 0.605659566833592; 5 0.323269030695212; 6 0.590821508384101]
+    R0_2 = [1 10; 2 20; 3 30; 4 40; 5 50; 6 60]
 
-R0_4= [1 -8.888614458250306; 2 -10.999025290685955; 3 -19.339674247091921; 4 -10.289152668326622; 5 18.107579559267656; 6 -8.930794511222629]
+    R0_3= [1 0.027212780358615; 2 0.117544343373396; 3 0.140184539179715; 4 0.605659566833592; 5 0.323269030695212; 6 0.590821508384101]
 
-tol = 10^(-7.0);
+    R0_4= [1 -8.888614458250306; 2 -10.999025290685955; 3 -19.339674247091921; 4 -10.289152668326622; 5 18.107579559267656; 6 -8.930794511222629]
 
-@printf("Case 1\n\tThe residual matrix Ri without rank deficiency")
-X = BFBCG(A,guess,M,tol,1000,R0)
+    tol = 10^(-7.0);
 
-@printf("\nCase 2\n\tThe residual matrix Ri with rank deficiency")
-X = BFBCG(A,guess,M,tol,9,R0_2)
+    @printf("Case 1\n\tThe residual matrix Ri without rank deficiency")
+    X = BFBCG(A,guess,M,tol,1000,R0)
 
-@printf("\nCase 3\n\tThe residual matrix Ri with rank deficiency")
-X = BFBCG(A,guess,M,tol,9,R0_3)
+    @printf("\nCase 2\n\tThe residual matrix Ri with rank deficiency")
+    X = BFBCG(A,guess,M,tol,9,R0_2)
 
-@printf("\nCase 4\n\tThe residual matrix Ri with rank deficiency")
-X = BFBCG(A,guess,M,tol,9,R0_4)
+    @printf("\nCase 3\n\tThe residual matrix Ri with rank deficiency")
+    X = BFBCG(A,guess,M,tol,9,R0_3)
+
+    @printf("\nCase 4\n\tThe residual matrix Ri with rank deficiency")
+    X = BFBCG(A,guess,M,tol,9,R0_4)
+end
+
+end
