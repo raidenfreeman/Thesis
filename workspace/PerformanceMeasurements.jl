@@ -78,19 +78,29 @@ function main()
     # any counters running as a result of a previous call
     # to PAPI.start_counters()
 
-    info("Counters started")
-    PAPI.start_counters(cs)
+    calculation()
+
+    values = []
+
+    for i = 1:10
+        cs = PAPI.EventSet([PAPI.TOT_INS])
+        PAPI.num_counters()
+        info("Counters started")
+        PAPI.start_counters(cs)
 
     # retval = computation_add()
     # sleep(8)
 
-    calculation()
-    values = PAPI.read_counters!(cs)
-
-    PAPI.stop_counters(cs)
+        calculation()
+        push!(values, PAPI.read_counters!(cs))
+        PAPI.stop_counters(cs)
+    end
     # @printf("%d",retval);
+    # Base.showarray(STDOUT,values,false)
 
-    @printf("The total instructions executed for the calculation are %lld \n",values[1]);
+    firstCounterValues = map(x->x[1],values);
+
+    @printf("The total instructions executed for the calculation are %lld \n", mean(firstCounterValues));
     # @printf("The total cycles used are %lld \n", values[2] );
 end
 
