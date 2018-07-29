@@ -1,0 +1,1 @@
+pandoc measurements.md -f markdown -s -o measurements.docx
