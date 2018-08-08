@@ -1,4 +1,4 @@
-@printf("REMEMBER TO RUN\n\nsudo sysctl -w kernel.perf_event_paranoid=0\n\n");
+# @printf("REMEMBER TO RUN\n\nsudo sysctl -w kernel.perf_event_paranoid=0\n\n");
 
 include("BFBCG.jl")
 
@@ -13,11 +13,11 @@ using MatrixDepot
 include("../PAPI.jl/src/PAPI.jl");
 
 #small
-# matrixNames = ["HB/bcsstk01","HB/bcsstk03","Pajek/Journals","HB/bcsstk02","JGD_Trefethen/Trefethen_20b"];
+# matrixNames = ["HB/bcsstk01"]#,"HB/bcsstk03","Pajek/Journals","HB/bcsstk02","JGD_Trefethen/Trefethen_20b"];
 #medium
 # matrixNames = ["TKK/smt"];
 #large
-matrixNames = ["TKK/smt"];#,"Norris/fv3","ND/nd24k","ND/nd3k"];
+matrixNames = ["ND/nd24k"]; #"TKK/smt","Norris/fv3","ND/nd3k",
 
 
 # import PAPI
@@ -42,6 +42,7 @@ matrixNames = ["TKK/smt"];#,"Norris/fv3","ND/nd24k","ND/nd3k"];
 
 
 function main(matrixName::String)
+    run(`ntfy send "$matrixName  started :rocket:"`)
 
     inputMatrix = matrixdepot(matrixName, :r)
     matrixSize = size(inputMatrix)[1]
@@ -127,7 +128,7 @@ function main(matrixName::String)
     end
 
     measurement()
-
+    run(`ntfy send "$matrixName  finished :checkered_flag:"`)
 end
 
 function main_parallel(matrixName::String)
@@ -237,5 +238,6 @@ for i = 1 : size(matrixNames)[1]
         matrixdepot(matrixNames[i], :get)
         @printf("\n\n================\n\nDownloaded %s\n\n================\n\n", matrixNames[i]);
     end
-    main_parallel(matrixNames[i])
+    # main_parallel(matrixNames[i])
+    main(matrixNames[i])
 end
